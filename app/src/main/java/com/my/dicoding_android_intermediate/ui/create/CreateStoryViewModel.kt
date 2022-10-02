@@ -1,6 +1,7 @@
 package com.my.dicoding_android_intermediate.ui.create
 
 import androidx.lifecycle.ViewModel
+import androidx.paging.ExperimentalPagingApi
 import com.my.dicoding_android_intermediate.data.remote.response.ResponseFileUpload
 import com.my.dicoding_android_intermediate.data.repository.AuthRepository
 import com.my.dicoding_android_intermediate.data.repository.story.StoryRepository
@@ -9,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import javax.inject.Inject
-
+@ExperimentalPagingApi
 @HiltViewModel
 class CreateStoryViewModel @Inject constructor(
     private val authRepository: AuthRepository,

@@ -27,11 +27,5 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_home) as NavHostFragment
         val navController = navHostFragment.navController
         navView.setupWithNavController(navController)
-
     }
-
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        val navController = findNavController(R.id.nav_host_fragment_home)
-//        return item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
-//    }
 }

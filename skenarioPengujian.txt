@@ -1,0 +1,50 @@
+Unit Test Repository
+
+StoryRepository
+- Ambil data story dengan pager sukses
+- Ambil story dengan location sukses
+- Ambil story dengan location error
+- Upload image sukses
+- Upload image error
+
+AuthRepository
+- Login User sukses
+- Login User gagal
+- Simpan token sukses
+
+Unit Test View Model
+
+CreateStoryViewModel
+- Ambil token sukses
+- Ambil token susses tetapi null
+- Upload file susses
+- Upload file gagal
+
+HomeViewModel
+- Ambil story sukses
+
+LoginViewModel
+- Login sukses
+- Login gagal
+- Simpan authentikasi token sukses
+
+MapLocationViewModel
+- Ambil story dengan lokasi
+- Ambil story dengan lokasi gagal
+
+SettingViewModel
+- Simpan token sukses
+
+
+Android Test
+
+HomeFragmentTest
+- HomeFragment sukses
+- HomeFragment dengan response kosong
+- HomeFragment gagal
+
+MainActivityTest
+- Load story informasi detail
+
+MapLocationFragmentTest
+- Launch location fragment sukses

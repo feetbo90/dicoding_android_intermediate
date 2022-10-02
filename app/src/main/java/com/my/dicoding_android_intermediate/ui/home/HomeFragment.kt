@@ -2,27 +2,26 @@ package com.my.dicoding_android_intermediate.ui.home
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.my.dicoding_android_intermediate.R
+import com.my.dicoding_android_intermediate.adapter.LoadingAdapter
 import com.my.dicoding_android_intermediate.adapter.StoryListAdapter
-import com.my.dicoding_android_intermediate.data.remote.response.StoryResponse
-import com.my.dicoding_android_intermediate.data.remote.response.StoryResponseItem
-import com.my.dicoding_android_intermediate.data.result.MyResult
+import com.my.dicoding_android_intermediate.data.local.entity.Story
 import com.my.dicoding_android_intermediate.databinding.FragmentHomeBinding
 import com.my.dicoding_android_intermediate.ui.create.CreateStoryActivity
 import com.my.dicoding_android_intermediate.utils.Utils
+import com.my.dicoding_android_intermediate.utils.animateVisibility
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
+@ExperimentalPagingApi
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
@@ -30,12 +29,13 @@ class HomeFragment : Fragment() {
 
     private var token: String = ""
     private val homeViewModel: HomeViewModel by viewModels()
+    private lateinit var listAdapter: StoryListAdapter
+    private lateinit var recyclerView: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         _binding = FragmentHomeBinding.inflate(LayoutInflater.from(requireActivity()))
         return binding.root
     }
@@ -43,9 +43,9 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         token = requireActivity().intent.getStringExtra(Utils.TOKEN) ?: ""
-        setViewModel()
+        setRecyclerView()
         setSwipeRefreshLayout()
-
+        getStories()
         binding?.fabCreateStory?.setOnClickListener {
             Intent(requireContext(), CreateStoryActivity::class.java).also { intent ->
                 startActivity(intent)
@@ -53,92 +53,61 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun setViewModel() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            launch {
-                homeViewModel.stories.collect { result ->
-                    onFollowsResultReceived(result)
-                }
-            }
-            launch {
-                homeViewModel.isLoaded.collect { loaded ->
-                    if (!loaded) {
-                        homeViewModel.getStories(token)
-                        homeViewModel.setLoaded(false)
-                        showLoading(false)
-                    }
-                }
-            }
-        }
-    }
-
-    private fun setRefresh() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            launch {
-                homeViewModel.stories.collect { result ->
-                    onFollowsResultReceived(result)
-                }
-            }
-            launch {
-                homeViewModel.isLoaded.collect { loaded ->
-                    if (!loaded) {
-                        homeViewModel.getStories(token)
-                        homeViewModel.setLoaded(false)
-                        binding.swipeRefresh.isRefreshing = false
-                        showLoading(false)
-                    }
-                }
-            }
-        }
-    }
 
     private fun setSwipeRefreshLayout() {
-        binding?.swipeRefresh?.setOnRefreshListener {
-            setRefresh()
+        binding.swipeRefresh.setOnRefreshListener {
+           getStories()
         }
     }
 
-
-    private fun onFollowsResultReceived(result: MyResult<StoryResponse>) {
-        when (result) {
-            is MyResult.Loading -> showLoading(true)
-            is MyResult.Error -> {
-                binding.status.visibility = View.VISIBLE
-                binding.status.text = resources.getString(R.string.noStoriesFound)
-                binding.swipeRefresh.isRefreshing = false
-                showLoading(false)
-            }
-            is MyResult.Success -> {
-                binding.swipeRefresh.isRefreshing = false
-                showStories(result.data.storyResponseItems)
-                showLoading(false)
-            }
+    private fun getStories() {
+        homeViewModel.getStoriesTwo(token).observe(viewLifecycleOwner) { result ->
+            updateTheStories(result)
         }
     }
 
-    private fun showLoading(isLoading: Boolean) {
-        if (isLoading) binding.loading.visibility = View.VISIBLE
-        else binding.loading.visibility = View.GONE
-    }
+    private fun setRecyclerView() {
+        val linearLayoutManager = LinearLayoutManager(requireContext())
+        listAdapter = StoryListAdapter()
 
-    private fun showStories(stories: ArrayList<StoryResponseItem>) {
-        if (stories.size > 0) {
-            val linearLayoutManager = LinearLayoutManager(requireContext())
-            val listAdapter = StoryListAdapter(stories)
-
-            binding.stories.apply {
-                layoutManager = linearLayoutManager
-                adapter = listAdapter
-                setHasFixedSize(true)
-            }
-
-            listAdapter.setOnItemClickCallback(object :
-                StoryListAdapter.OnItemClickCallback {
-                override fun onItemClicked(data: StoryResponseItem) {
+        listAdapter.addLoadStateListener { loadState ->
+            if ((loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && listAdapter.itemCount < 1) || loadState.source.refresh is LoadState.Error) {
+                binding.apply {
+                    status.animateVisibility(true)
+                    ivNotFoundError.animateVisibility(true)
+                    stories.animateVisibility(false)
                 }
-            })
-        } else binding.status.visibility = View.VISIBLE
+            } else {
+                binding.apply {
+                    status.animateVisibility(false)
+                    ivNotFoundError.animateVisibility(false)
+                    stories.animateVisibility(true)
+                }
+            }
+
+            binding.swipeRefresh.isRefreshing = loadState.source.refresh is LoadState.Loading
+        }
+
+        try {
+            recyclerView = binding.stories
+            recyclerView.apply {
+                adapter = listAdapter.withLoadStateFooter(
+                    footer = LoadingAdapter {
+                        listAdapter.retry()
+                    }
+                )
+                layoutManager = linearLayoutManager
+            }
+        } catch (e: NullPointerException) {
+            e.printStackTrace()
+        }
     }
 
+    private fun updateTheStories(stories: PagingData<Story>) {
+        val recyclerViewState = recyclerView.layoutManager?.onSaveInstanceState()
 
+        listAdapter.submitData(lifecycle, stories)
+
+        recyclerView.layoutManager?.onRestoreInstanceState(recyclerViewState)
+    }
 }

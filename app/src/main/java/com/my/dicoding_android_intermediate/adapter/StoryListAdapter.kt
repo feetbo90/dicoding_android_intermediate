@@ -8,16 +8,18 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.my.dicoding_android_intermediate.data.local.entity.Story
 import com.my.dicoding_android_intermediate.data.remote.response.StoryResponseItem
 import com.my.dicoding_android_intermediate.databinding.StoryItemBinding
 import com.my.dicoding_android_intermediate.ui.detail.DetailActivity
 import com.my.dicoding_android_intermediate.utils.Utils
 import com.my.dicoding_android_intermediate.utils.setImageFromUrl
 import com.my.dicoding_android_intermediate.utils.setLocalDateFormat
-import java.util.ArrayList
 
-class StoryListAdapter(private val listUserStory: ArrayList<StoryResponseItem>) : RecyclerView.Adapter<StoryListAdapter.ViewHolder>() {
+class StoryListAdapter : PagingDataAdapter<Story, StoryListAdapter.ViewHolder>(DiffCallback) {
     private lateinit var onItemClickCallback: OnItemClickCallback
 
     fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback) {
@@ -31,7 +33,7 @@ class StoryListAdapter(private val listUserStory: ArrayList<StoryResponseItem>) 
 
     class ViewHolder(private val binding: StoryItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(context: Context, story: StoryResponseItem) {
+        fun bind(context: Context, story: Story) {
             binding.apply {
                 storyUsername.text = story.name
                 tvStoryDescription.text = story.description
@@ -61,13 +63,29 @@ class StoryListAdapter(private val listUserStory: ArrayList<StoryResponseItem>) 
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val stories = listUserStory[position]
-        holder.bind(holder.itemView.context, stories)
+//        val stories = listUserStory[position]
+//        holder.bind(holder.itemView.context, stories)
+        val stories = getItem(position)
+        if (stories != null) {
+            holder.bind(holder.itemView.context, stories)
+        }
     }
 
-    override fun getItemCount(): Int = listUserStory.size
+//    override fun getItemCount(): Int = listUserStory.size
 
     interface OnItemClickCallback {
         fun onItemClicked(data: StoryResponseItem)
+    }
+
+    companion object {
+        val DiffCallback = object : DiffUtil.ItemCallback<Story>() {
+            override fun areItemsTheSame(oldItem: Story, newItem: Story): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(oldItem: Story, newItem: Story): Boolean {
+                return oldItem == newItem
+            }
+        }
     }
 }

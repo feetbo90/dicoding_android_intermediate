@@ -48,4 +48,10 @@
     <string name="logoutDialogMessage">Are You Sure?</string>
     <string name="cancel">Cancel</string>
     <string name="logoutSuccess">Logout Success</string>
+    <string name="pleaseActivateLocation">Please Activate Location</string>
+    <string name="location">Locations</string>
+    <string name="retry">Retry</string>
+    <string name="shareLocation">Share Location</string>
+    <string name="locationPermissionDenied">Permission Denied</string>
+    <string name="locationPermissionActionDenied">Location Permission Action Denied</string>
 </resources>

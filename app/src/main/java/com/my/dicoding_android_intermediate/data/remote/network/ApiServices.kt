@@ -25,14 +25,6 @@ interface ApiService {
         @Field("password") password: String
     ): ResponseRegister
 
-    @GET("stories")
-    suspend fun getAllStories(
-        @Header("Authorization") token: String,
-        @Query("page") page: Int? = null,
-        @Query("size") size: Int? = null,
-        @Query("location") location: Int? = null
-    ): StoryResponse
-
     @Multipart
     @POST("stories")
     suspend fun uploadImage(
@@ -42,4 +34,12 @@ interface ApiService {
         @Part("lat") lat: RequestBody?,
         @Part("lon") lon: RequestBody?
     ): ResponseFileUpload
+
+    @GET("stories")
+    suspend fun getAllStories(
+        @Header("Authorization") token: String,
+        @Query("page") page: Int? = null,
+        @Query("size") size: Int? = null,
+        @Query("location") location: Int? = null
+    ): StoryResponse
 }

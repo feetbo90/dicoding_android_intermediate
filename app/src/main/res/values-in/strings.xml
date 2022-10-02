@@ -48,4 +48,10 @@
     <string name="logoutDialogMessage">Apakah Anda Yakin?</string>
     <string name="cancel">Batal</string>
     <string name="logoutSuccess">Keluar Berhasil</string>
+    <string name="pleaseActivateLocation">Mohon Aktifkan Lokasi</string>
+    <string name="location">Lokasi</string>
+    <string name="retry">Coba Lagi</string>
+    <string name="shareLocation">Berbagi Lokasi</string>
+    <string name="locationPermissionDenied">Akses Ditolak</string>
+    <string name="locationPermissionActionDenied">Aksi Akses Lokasi Ditolak</string>
 </resources>

@@ -19,9 +19,11 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.19630192502532928" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/fragment_map_location.xml" value="0.25729166666666664" />
         <entry key="app/src/main/res/layout/fragment_register.xml" value="0.43645833333333334" />
         <entry key="app/src/main/res/layout/fragment_setting.xml" value="0.33" />
         <entry key="app/src/main/res/layout/story_item.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/story_loading.xml" value="0.33" />
         <entry key="app/src/main/res/menu/create_story_menu.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/menu/nav_menu.xml" value="0.1345486111111111" />
         <entry key="app/src/main/res/xml/file_paths.xml" value="0.4036458333333333" />

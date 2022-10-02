@@ -1,25 +1,35 @@
 package com.my.dicoding_android_intermediate.ui.create
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.Settings
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.ExperimentalPagingApi
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.my.dicoding_android_intermediate.R
 import com.my.dicoding_android_intermediate.databinding.ActivityCreateStoryBinding
 import com.my.dicoding_android_intermediate.utils.MediaUtility
 import com.my.dicoding_android_intermediate.utils.MediaUtility.reduceFileImage
 import com.my.dicoding_android_intermediate.utils.MediaUtility.uriToFile
+import com.my.dicoding_android_intermediate.utils.Utils
 import com.my.dicoding_android_intermediate.utils.animateVisibility
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -34,12 +44,15 @@ import java.io.FileOutputStream
 import java.io.OutputStream
 
 @AndroidEntryPoint
+@ExperimentalPagingApi
 class CreateStoryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCreateStoryBinding
     private var getFile: File? = null
     private var token: String = ""
     private lateinit var currentPathPhoto: String
     private val viewModel: CreateStoryViewModel by viewModels()
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var location: Location? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +62,8 @@ class CreateStoryActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
         lifecycleScope.launchWhenCreated {
             launch {
                 viewModel.getAuthToken().collect { authToken ->
@@ -56,9 +71,79 @@ class CreateStoryActivity : AppCompatActivity() {
                 }
             }
         }
-
+        binding.switchLocation?.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                getLastLocation()
+            } else {
+                this.location = null
+            }
+        }
         binding.btnCamera.setOnClickListener { startCamera() }
         binding.btnGallery.setOnClickListener { startGallery() }
+    }
+
+    private fun getLastLocation() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            // Location permission granted
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    this.location = location
+                    Log.d(Utils.TAG_CREATE_STORY, "getLastLocation: ${location.latitude}, ${location.longitude}")
+                } else {
+                    Toast.makeText(
+                        this,
+                        getString(R.string.pleaseActivateLocation),
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    binding.switchLocation?.isChecked = false
+                }
+            }
+        } else {
+            // Location permission denied
+            requestPermissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        }
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        Log.d(Utils.TAG_CREATE_STORY, "$permissions")
+        when {
+            permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false -> {
+                getLastLocation()
+            }
+            else -> {
+                Snackbar
+                    .make(
+                        binding.root,
+                        getString(R.string.locationPermissionDenied),
+                        Snackbar.LENGTH_SHORT
+                    )
+                    .setActionTextColor(getColor(R.color.white))
+                    .setAction(getString(R.string.locationPermissionActionDenied)) {
+
+                        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).also { intent ->
+                            val uri = Uri.fromParts("package", packageName, null)
+                            intent.data = uri
+
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            startActivity(intent)
+                        }
+                    }
+                    .show()
+
+                binding.switchLocation?.isChecked = false
+            }
+        }
     }
 
     private val launcherIntentCamera = registerForActivityResult(
@@ -175,10 +260,12 @@ class CreateStoryActivity : AppCompatActivity() {
                     // Collect story location
                     var lat: RequestBody? = null
                     var lon: RequestBody? = null
-
-
-                    // Uploading information to the server and collecting server response
-                    // Making decision based on server response
+                    if (location != null) {
+                        lat =
+                            location?.latitude.toString().toRequestBody("text/plain".toMediaType())
+                        lon =
+                            location?.longitude.toString().toRequestBody("text/plain".toMediaType())
+                    }
                     viewModel.uploadImage(token, imageMultipart, description, lat, lon)
                         .collect { response ->
                             response.onSuccess {
