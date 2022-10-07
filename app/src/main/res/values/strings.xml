@@ -48,4 +48,9 @@
     <string name="logoutDialogMessage">Are You Sure?</string>
     <string name="cancel">Cancel</string>
     <string name="logoutSuccess">Logout Success</string>
+    <string name="map">Map</string>
+    <string name="normal_type">Normal</string>
+    <string name="satellite_type">Satellite</string>
+    <string name="terrain_type">Terrain</string>
+    <string name="hybrid_type">Hybrid</string>
 </resources>

@@ -4,7 +4,7 @@ plugins {
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
     id 'kotlin-parcelize'
-
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 android {
@@ -50,8 +50,8 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     // Ktx
-    implementation 'androidx.activity:activity-ktx:1.5.1'
-    implementation 'androidx.fragment:fragment-ktx:1.5.2'
+    implementation 'androidx.activity:activity-ktx:1.6.0'
+    implementation 'androidx.fragment:fragment-ktx:1.5.3'
     implementation "androidx.lifecycle:lifecycle-livedata-core-ktx:2.6.0-alpha02"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.0-alpha02"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.0-alpha02"
@@ -82,6 +82,8 @@ dependencies {
 
     // Paging
     implementation "androidx.paging:paging-runtime-ktx:3.1.1"
+
+    implementation 'com.google.android.gms:play-services-maps:18.0.0'
 
     kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.42'
     androidTestImplementation 'com.google.dagger:hilt-android-testing:2.42'

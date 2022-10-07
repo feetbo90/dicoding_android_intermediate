@@ -48,4 +48,9 @@
     <string name="logoutDialogMessage">Apakah Anda Yakin?</string>
     <string name="cancel">Batal</string>
     <string name="logoutSuccess">Keluar Berhasil</string>
+    <string name="map">Peta</string>
+    <string name="normal_type">Normal</string>
+    <string name="satellite_type">Satelit</string>
+    <string name="terrain_type">Terrain</string>
+    <string name="hybrid_type">Hybrid</string>
 </resources>
