@@ -9,6 +9,7 @@ import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -239,8 +240,13 @@ class CreateStoryActivity : AppCompatActivity() {
                     // Collect story location
                     var lat: RequestBody? = null
                     var lon: RequestBody? = null
-
-
+                    Log.i("Lokasi", myLocation.toString())
+                    lat =
+                        myLocation.latitude.toString()
+                            .toRequestBody("text/plain".toMediaType())
+                    lon =
+                        myLocation.longitude.toString()
+                            .toRequestBody("text/plain".toMediaType())
                     // Uploading information to the server and collecting server response
                     // Making decision based on server response
                     viewModel.uploadImage(token, imageMultipart, description, lat, lon)
