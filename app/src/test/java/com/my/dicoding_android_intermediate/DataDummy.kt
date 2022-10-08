@@ -2,6 +2,8 @@ package com.my.dicoding_android_intermediate
 
 import com.my.dicoding_android_intermediate.data.remote.response.LoginResult
 import com.my.dicoding_android_intermediate.data.remote.response.ResponseLogin
+import com.my.dicoding_android_intermediate.data.remote.response.ResponseRegister
+import java.lang.Exception
 
 object DataDummy {
 
@@ -23,5 +25,13 @@ object DataDummy {
         val userLogin =
             LoginResult(name = "Muhammad Iqbal Pradipta", userId = "123456", token = "auth_token")
         return ResponseLogin(userLogin, error = false, message = "Berhasil Login")
+    }
+
+    fun generateFailedLogin(): Exception {
+        return Exception("Login Failed")
+    }
+
+    fun generateDummyRegister(): ResponseRegister {
+        return ResponseRegister(error = false, message = "Berhasil Register")
     }
 }
