@@ -41,6 +41,17 @@ class StoryRepository @Inject constructor(
         }
     }
 
+    fun getMapStories(token: String): Flow<MyResult<StoryResponse>> = flow {
+        emit(MyResult.Loading)
+        try {
+            val response = apiService.getAllStories(getBearerToken(token), location = 1)
+            emit(MyResult.Success(response))
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emit(MyResult.Error(e.toString()))
+        }
+    }
+
     private fun getBearerToken(token: String): String {
         return "Bearer $token"
     }
