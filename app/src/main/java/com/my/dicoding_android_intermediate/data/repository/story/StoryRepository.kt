@@ -44,7 +44,7 @@ class StoryRepository @Inject constructor(
     fun getMapStories(token: String): Flow<MyResult<StoryResponse>> = flow {
         emit(MyResult.Loading)
         try {
-            val response = apiService.getAllStories(getBearerToken(token), location = 1)
+            val response = apiService.getMapStories(getBearerToken(token), location = 1)
             emit(MyResult.Success(response))
         } catch (e: Exception) {
             e.printStackTrace()
