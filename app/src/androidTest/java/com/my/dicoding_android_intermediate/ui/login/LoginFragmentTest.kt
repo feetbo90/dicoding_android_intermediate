@@ -1,10 +1,12 @@
 package com.my.dicoding_android_intermediate.ui.login
 
-import androidx.fragment.app.testing.launchFragmentInContainer
+import com.my.dicoding_android_intermediate.launchFragmentInHiltContainer
+import dagger.hilt.android.testing.CustomTestApplication
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Rule
 import org.junit.Test
+
 
 @HiltAndroidTest
 class LoginFragmentTest {
@@ -14,6 +16,6 @@ class LoginFragmentTest {
 
     @Test
     fun getHeadlineNews_Success() {
-        launchFragmentInContainer<LoginFragment>()
+        launchFragmentInHiltContainer<LoginFragment>()
     }
 }
