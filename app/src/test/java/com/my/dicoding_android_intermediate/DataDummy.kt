@@ -3,6 +3,7 @@ package com.my.dicoding_android_intermediate
 import com.my.dicoding_android_intermediate.data.remote.response.*
 import com.my.dicoding_android_intermediate.data.result.MyResult
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlin.ClassCastException
 import kotlin.Exception
@@ -15,16 +16,23 @@ object DataDummy {
         return ResponseLogin(userLogin, error = false, message = "Berhasil Login")
     }
 
-    fun generateFailedLogin(): Exception {
-        return Exception("Login Failed")
+    fun generateDummyLoginMyResult(): Flow<MyResult<ResponseLogin>> = flow {
+        val userLogin =
+            LoginResult(name = "Muhammad Iqbal Pradipta", userId = "123456", token = "auth_token")
+        val myResponse = ResponseLogin(userLogin, error = false, message = "Berhasil Login")
+        emit(MyResult.Success(myResponse))
+    }
+
+    fun generateFailedLogin(): MyResult.ErrorException {
+        return MyResult.ErrorException(Exception("Login Failed"))
     }
 
     fun generateDummyRegister(): ResponseRegister {
         return ResponseRegister(error = false, message = "Berhasil Register")
     }
 
-    fun generateFailedRegister(): Exception {
-        return Exception("Register Failed")
+    fun generateFailedRegister(): MyResult.ErrorException {
+        return MyResult.ErrorException(Exception("Register Failed"))
     }
 
     fun getAuthToken(): Flow<String> {

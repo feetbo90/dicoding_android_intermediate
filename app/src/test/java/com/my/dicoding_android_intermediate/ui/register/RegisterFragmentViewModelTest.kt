@@ -3,10 +3,8 @@ package com.my.dicoding_android_intermediate.ui.register
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.my.dicoding_android_intermediate.DataDummy
 import com.my.dicoding_android_intermediate.MainDispatcherRule
-import com.my.dicoding_android_intermediate.data.remote.response.ResponseLogin
-import com.my.dicoding_android_intermediate.data.remote.response.ResponseRegister
 import com.my.dicoding_android_intermediate.data.repository.AuthRepository
-import com.my.dicoding_android_intermediate.ui.login.LoginFragmentViewModel
+import com.my.dicoding_android_intermediate.data.result.MyResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -46,14 +44,16 @@ class RegisterFragmentViewModelTest {
     @Test
     fun`register User should not null and return success`() = runTest {
         val expectedRegister = flow {
-            emit(Result.success(dummyRegister))
+            emit(MyResult.Success(dummyRegister))
         }
         `when`(authRepository.userRegister("yo2@gmail.com", "Mhd Iqbal Pradipta", "123456")).thenReturn(expectedRegister)
         registerFragmentViewModel.registerUser("Mhd Iqbal Pradipta", "yo2@gmail.com", "123456").collect { result ->
-            Assert.assertNotNull(result)
-            Assert.assertTrue(result.isSuccess)
-            result.onSuccess {
-                Assert.assertEquals(it, dummyRegister)
+            when (result) {
+                is MyResult.Success -> {
+                    Assert.assertNotNull(result)
+                    Assert.assertEquals(dummyRegister, result.data)
+                }
+                else -> {}
             }
         }
         Mockito.verify(authRepository).userRegister("yo2@gmail.com", "Mhd Iqbal Pradipta","123456")
@@ -61,15 +61,17 @@ class RegisterFragmentViewModelTest {
 
     @Test
     fun `register User should return failed`() = runTest {
-        val expectedRegister : Flow<Result<ResponseRegister>> = flow {
-            emit(Result.failure(errorRegister))
+        val expectedRegister : Flow<MyResult.ErrorException> = flow {
+            emit(errorRegister)
         }
         `when`(authRepository.userRegister("yo2@gmail.com", "Mhd Iqbal Pradipta", "123456")).thenReturn(expectedRegister)
         registerFragmentViewModel.registerUser("Mhd Iqbal Pradipta", "yo2@gmail.com", "123456").collect { result ->
-            Assert.assertNotNull(result)
-            Assert.assertTrue(result.isFailure)
-            result.onFailure {
-                Assert.assertEquals(it, errorRegister)
+            when (result) {
+                is MyResult.ErrorException -> {
+                    Assert.assertNotNull(result)
+                    Assert.assertEquals(result, errorRegister)
+                }
+                else -> {}
             }
         }
         Mockito.verify(authRepository).userRegister("yo2@gmail.com", "Mhd Iqbal Pradipta", "123456")

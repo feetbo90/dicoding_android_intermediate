@@ -5,6 +5,7 @@ import com.my.dicoding_android_intermediate.DataDummy
 import com.my.dicoding_android_intermediate.MainDispatcherRule
 import com.my.dicoding_android_intermediate.data.remote.response.ResponseLogin
 import com.my.dicoding_android_intermediate.data.repository.AuthRepository
+import com.my.dicoding_android_intermediate.data.result.MyResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -42,14 +43,16 @@ class LoginFragmentViewModelTest {
     @Test
     fun `login User should not null and return success`() = runTest {
         val expectedLogin = flow {
-            emit(Result.success(dummyLogin))
+            emit(MyResult.Success(dummyLogin))
         }
         `when`(authRepository.userLogin("yo2@gmail.com", "123456")).thenReturn(expectedLogin)
         loginFragmentViewModel.loginUser("yo2@gmail.com", "123456").collect { result ->
-            assertNotNull(result)
-            assertTrue(result.isSuccess)
-            result.onSuccess {
-                assertEquals(it, dummyLogin)
+            when (result) {
+                is MyResult.Success -> {
+                    assertNotNull(result)
+                    assertEquals(dummyLogin, result.data)
+                }
+                else -> {}
             }
         }
         Mockito.verify(authRepository).userLogin("yo2@gmail.com", "123456")
@@ -57,15 +60,20 @@ class LoginFragmentViewModelTest {
 
     @Test
     fun `login User should return failed`() = runTest {
-        val expectedLogin : Flow<Result<ResponseLogin>> = flow {
-            emit(Result.failure(errorLogin))
+        val expectedLogin : Flow<MyResult.ErrorException> = flow {
+            emit(errorLogin)
         }
         `when`(authRepository.userLogin("bla@gmail.com", "123456")).thenReturn(expectedLogin)
         loginFragmentViewModel.loginUser("bla@gmail.com", "123456").collect { result ->
-            assertNotNull(result)
-            assertTrue(result.isFailure)
-            result.onFailure {
-                assertEquals(it, errorLogin)
+            when (result) {
+                is MyResult.ErrorException -> {
+                    assertNotNull(result)
+                    assertEquals(errorLogin , result)
+                }
+                is MyResult.Success -> {
+                    assertTrue(false)
+                }
+                else -> {}
             }
         }
         Mockito.verify(authRepository).userLogin("bla@gmail.com", "123456")

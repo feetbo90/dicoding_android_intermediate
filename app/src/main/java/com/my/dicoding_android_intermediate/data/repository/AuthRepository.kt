@@ -4,6 +4,7 @@ import com.my.dicoding_android_intermediate.data.datastore.AuthDataStores
 import com.my.dicoding_android_intermediate.data.remote.network.ApiService
 import com.my.dicoding_android_intermediate.data.remote.response.ResponseLogin
 import com.my.dicoding_android_intermediate.data.remote.response.ResponseRegister
+import com.my.dicoding_android_intermediate.data.result.MyResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -14,23 +15,25 @@ class AuthRepository @Inject constructor(
     private val apiService: ApiService,
     private val authDataStores: AuthDataStores
 ) {
-    suspend fun userLogin(email: String, password: String): Flow<Result<ResponseLogin>> = flow {
+    suspend fun userLogin(email: String, password: String): Flow<MyResult<ResponseLogin>> = flow {
         try {
             val response = apiService.loginUser(email, password)
-            emit(Result.success(response))
+            emit(MyResult.Success(response))
         } catch (e: Exception) {
             e.printStackTrace()
-            emit(Result.failure(e))
+            emit(MyResult.ErrorException(Exception("Login Failed")))
         }
     }.flowOn(Dispatchers.IO)
 
-    suspend fun userRegister(email: String, fullName: String, password: String): Flow<Result<ResponseRegister>> = flow {
+    suspend fun userRegister(email: String, fullName: String, password: String): Flow<MyResult<ResponseRegister>> = flow {
         try {
             val response = apiService.registerUser(fullName, email, password)
-            emit(Result.success(response))
+//            emit(Result.success(response))
+            emit(MyResult.Success(response))
         } catch (e: Exception) {
             e.printStackTrace()
-            emit(Result.failure(e))
+            emit(MyResult.ErrorException(Exception("Register Failed")))
+//            emit(Result.failure(e))
         }
     }.flowOn(Dispatchers.IO)
 

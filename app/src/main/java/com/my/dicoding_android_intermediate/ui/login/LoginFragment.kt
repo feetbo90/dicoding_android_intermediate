@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.my.dicoding_android_intermediate.R
+import com.my.dicoding_android_intermediate.data.result.MyResult
 import com.my.dicoding_android_intermediate.databinding.FragmentLoginBinding
 import com.my.dicoding_android_intermediate.ui.main.MainActivity
 import com.my.dicoding_android_intermediate.utils.Utils.Companion.TOKEN
@@ -63,8 +64,8 @@ class LoginFragment : Fragment() {
 
     private fun setActions() {
         binding.apply {
-            register.setOnClickListener {
-                view -> view.findNavController().navigate(R.id.action_loginFragment_to_registerFragment3)
+            register.setOnClickListener { view ->
+                view.findNavController().navigate(R.id.action_loginFragment_to_registerFragment3)
             }
             masuk.setOnClickListener {
                 login()
@@ -81,30 +82,31 @@ class LoginFragment : Fragment() {
             if (loginJob.isActive) loginJob.cancel()
             loginJob = launch {
                 viewModel.loginUser(username, password).collect { result ->
-                    result.onSuccess { credentials ->
-                        credentials.loginResult?.token?.let {
-                            token -> viewModel.saveToken(token)
-                            Intent(requireContext(), MainActivity::class.java).also { intent ->
-                                intent.putExtra(TOKEN, token)
-                                startActivity(intent)
-                                requireActivity().finish()
+                    when (result) {
+                        is MyResult.Success -> {
+                            result.data.loginResult?.token?.let { token ->
+                                Intent(requireContext(), MainActivity::class.java).also { intent ->
+                                    intent.putExtra(TOKEN, token)
+                                    startActivity(intent)
+                                    requireActivity().finish()
+                                }
+                                Toast.makeText(
+                                    requireContext(),
+                                    getString(R.string.loginSuccess),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         }
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.loginSuccess),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        is MyResult.ErrorException -> {
+                            Snackbar.make(
+                                binding.root,
+                                getString(R.string.loginError),
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                        }
+                        else -> {}
                     }
-                    result.onFailure {
-                        Snackbar.make(
-                            binding.root,
-                            getString(R.string.loginError),
-                            Snackbar.LENGTH_SHORT
-                        ).show()
-
-                        setLoadingState(false)
-                    }
+                    setLoadingState(false)
                 }
             }
         }

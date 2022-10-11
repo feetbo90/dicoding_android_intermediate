@@ -113,6 +113,7 @@ class HomeFragment : Fragment() {
                 showStories(result.data.storyResponseItems)
                 showLoading(false)
             }
+            else -> {}
         }
     }
 
