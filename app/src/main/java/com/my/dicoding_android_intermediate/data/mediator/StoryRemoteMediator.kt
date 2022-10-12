@@ -24,10 +24,12 @@ class StoryRemoteMediator(
         try {
             val responseData = apiService.getAllStories(token, page, state.config.pageSize)
             val endOfPaginationReached = responseData.storyResponseItems.isEmpty()
+            val storyLocalModelList: List<StoryLocalModel>
             storyDatabase.withTransaction {
                 if (loadType == LoadType.REFRESH) {
                     storyDatabase.storyDao().deleteAll()
                 }
+
                 storyDatabase.storyDao().insertStories(responseData)
             }
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
