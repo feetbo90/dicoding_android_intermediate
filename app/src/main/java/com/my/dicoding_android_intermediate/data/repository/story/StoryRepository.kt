@@ -1,5 +1,6 @@
 package com.my.dicoding_android_intermediate.data.repository.story
 
+import com.my.dicoding_android_intermediate.data.database.StoryDatabase
 import com.my.dicoding_android_intermediate.data.remote.network.ApiService
 import com.my.dicoding_android_intermediate.data.remote.response.ResponseFileUpload
 import com.my.dicoding_android_intermediate.data.remote.response.StoryResponse
@@ -12,6 +13,7 @@ import javax.inject.Inject
 
 class StoryRepository @Inject constructor(
     private val apiService: ApiService,
+    private val storyDatabase: StoryDatabase
 ) {
     fun getStories(token: String): Flow<MyResult<StoryResponse>> = flow {
         emit(MyResult.Loading)
@@ -23,6 +25,8 @@ class StoryRepository @Inject constructor(
             emit(MyResult.Error(e.toString()))
         }
     }
+
+    fun getAllStories():
 
     suspend fun uploadImage(
         token: String,
