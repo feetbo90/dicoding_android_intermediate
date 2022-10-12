@@ -10,9 +10,5 @@ import com.my.dicoding_android_intermediate.data.remote.model.StoryLocalModel
     exportSchema = false
 )
 abstract class StoryDatabase : RoomDatabase() {
-
     abstract fun storyDao(): StoryDao
-
-    companion object {
-    }
 }
