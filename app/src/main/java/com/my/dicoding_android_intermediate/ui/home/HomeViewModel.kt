@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import com.my.dicoding_android_intermediate.data.entities.Story
 import com.my.dicoding_android_intermediate.data.remote.response.StoryResponse
 import com.my.dicoding_android_intermediate.data.remote.response.StoryResponseItem
 import com.my.dicoding_android_intermediate.data.repository.story.StoryRepository
@@ -38,5 +40,8 @@ class HomeViewModel @Inject constructor(
     fun setLoaded(isLoading: Boolean) {
         _isLoaded.value = isLoading
     }
+
+    fun getStoriesTwo(token: String): LiveData<PagingData<Story>> =
+        storyRepository.getStories(token).cachedIn(viewModelScope).asLiveData()
 
 }
