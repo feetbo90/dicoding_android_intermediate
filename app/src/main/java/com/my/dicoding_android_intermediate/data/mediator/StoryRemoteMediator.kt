@@ -4,6 +4,7 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
+import androidx.room.withTransaction
 import com.my.dicoding_android_intermediate.data.database.StoryDatabase
 import com.my.dicoding_android_intermediate.data.remote.model.StoryLocalModel
 import com.my.dicoding_android_intermediate.data.remote.network.ApiService
@@ -23,12 +24,12 @@ class StoryRemoteMediator(
         try {
             val responseData = apiService.getAllStories(token, page, state.config.pageSize)
             val endOfPaginationReached = responseData.storyResponseItems.isEmpty()
-//            storyDatabase.withTransaction {
-//                if (loadType == LoadType.REFRESH) {
-//                    storyDatabase.storyDao().deleteAll()
-//                }
-//                storyDatabase.storyDao().insertStories(responseData)
-//            }
+            storyDatabase.withTransaction {
+                if (loadType == LoadType.REFRESH) {
+                    storyDatabase.storyDao().deleteAll()
+                }
+                storyDatabase.storyDao().insertStories(responseData)
+            }
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
         } catch (exception: Exception) {
             return MediatorResult.Error(exception)
