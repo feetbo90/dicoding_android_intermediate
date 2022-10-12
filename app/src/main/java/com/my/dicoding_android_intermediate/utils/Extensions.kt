@@ -9,6 +9,8 @@ import com.bumptech.glide.Glide
 import com.my.dicoding_android_intermediate.R
 import java.text.DateFormat
 import java.text.SimpleDateFormat
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 fun ImageView.setImageFromUrl(context: Context, url: String) {
@@ -32,5 +34,12 @@ fun TextView.setLocalDateFormat(timestamp: String) {
     val date = sdf.parse(timestamp) as Date
 
     val formattedDate = DateFormat.getDateInstance(DateFormat.FULL).format(date)
+    this.text = formattedDate
+}
+
+fun TextView.setLocalFormat(timeStamp: ZonedDateTime) {
+    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm:ss")
+    val formattedDate = timeStamp.format(formatter)
+
     this.text = formattedDate
 }
