@@ -1,12 +1,45 @@
 package com.my.dicoding_android_intermediate.data.mediator
 
-import com.my.dicoding_android_intermediate.data.datastore.AuthDataStores
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.LoadType
+import androidx.paging.PagingState
+import androidx.paging.RemoteMediator
+import com.my.dicoding_android_intermediate.data.database.StoryDatabase
+import com.my.dicoding_android_intermediate.data.remote.model.StoryLocalModel
 import com.my.dicoding_android_intermediate.data.remote.network.ApiService
-import javax.inject.Inject
 
-class StoryRemoteMediator @Inject constructor(
+@ExperimentalPagingApi
+class StoryRemoteMediator(
     private val apiService: ApiService,
-    private val dataStores: AuthDataStores,
+    private val storyDatabase: StoryDatabase,
+    private val token: String,
+) : RemoteMediator<Int, StoryLocalModel>() {
 
-) {
+    override suspend fun load(
+        loadType: LoadType,
+        state: PagingState<Int, StoryLocalModel>
+    ): MediatorResult {
+        val page = INITIAL_PAGE_INDEX
+        try {
+            val responseData = apiService.getAllStories(token, page, state.config.pageSize)
+            val endOfPaginationReached = responseData.isEmpty()
+            storyDatabase.withTransaction {
+                if (loadType == LoadType.REFRESH) {
+                    storyDatabase.storyDao().deleteAll()
+                }
+                storyDatabase.storyDao().insertStories(responseData)
+            }
+            return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
+        } catch (exception: Exception) {
+            return MediatorResult.Error(exception)
+        }
+    }
+
+    private companion object {
+        const val INITIAL_PAGE_INDEX = 1
+    }
+    override suspend fun initialize(): InitializeAction {
+        return InitializeAction.LAUNCH_INITIAL_REFRESH
+    }
+
 }
