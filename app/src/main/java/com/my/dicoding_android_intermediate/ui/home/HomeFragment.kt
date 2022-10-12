@@ -13,7 +13,10 @@ import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.my.dicoding_android_intermediate.R
+import com.my.dicoding_android_intermediate.adapter.LoadingStateAdapter
+import com.my.dicoding_android_intermediate.adapter.StoriesListAdapter
 import com.my.dicoding_android_intermediate.adapter.StoryListAdapter
+import com.my.dicoding_android_intermediate.data.entities.Story
 import com.my.dicoding_android_intermediate.data.remote.response.StoryResponse
 import com.my.dicoding_android_intermediate.data.remote.response.StoryResponseItem
 import com.my.dicoding_android_intermediate.data.result.MyResult
@@ -93,7 +96,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun setSwipeRefreshLayout() {
-        binding?.swipeRefresh?.setOnRefreshListener {
+        binding.swipeRefresh.setOnRefreshListener {
             setRefresh()
         }
     }
@@ -125,21 +128,32 @@ class HomeFragment : Fragment() {
     private fun showStories(stories: ArrayList<StoryResponseItem>) {
         if (stories.size > 0) {
             val linearLayoutManager = LinearLayoutManager(requireContext())
-            val listAdapter = StoryListAdapter(stories)
+            val listAdapter = StoriesListAdapter()
 
             binding.stories.apply {
                 layoutManager = linearLayoutManager
-                adapter = listAdapter
+                adapter = listAdapter.withLoadStateFooter(
+                    footer = LoadingStateAdapter {
+                        listAdapter.retry()
+                    }
+                )
                 setHasFixedSize(true)
             }
 
             listAdapter.setOnItemClickCallback(object :
-                StoryListAdapter.OnItemClickCallback {
+                StoriesListAdapter.OnItemClickCallback {
                 override fun onItemClicked(data: StoryResponseItem) {
                 }
             })
         } else binding.status.visibility = View.VISIBLE
     }
 
+    private fun updateTheStories(stories: PagingData<Story>) {
+        val recyclerViewState = recyclerView.layoutManager?.onSaveInstanceState()
+
+        listAdapter.submitData(lifecycle, stories)
+
+        recyclerView.layoutManager?.onRestoreInstanceState(recyclerViewState)
+    }
 
 }

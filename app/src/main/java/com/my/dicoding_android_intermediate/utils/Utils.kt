@@ -5,5 +5,6 @@ class Utils {
         const val TOKEN = "token"
         const val DETAIL = "detail"
         const val DATABASE_NAME = "theStory"
+        const val STORY_REMOTE_KEY = "theStoryRemoteKey"
     }
 }

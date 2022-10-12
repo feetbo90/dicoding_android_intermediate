@@ -4,9 +4,10 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.my.dicoding_android_intermediate.data.entities.Story
 import com.my.dicoding_android_intermediate.data.remote.response.StoryResponseItem
+import com.my.dicoding_android_intermediate.utils.Utils
 import java.time.ZonedDateTime
 
-@Entity(tableName = "theStory")
+@Entity(tableName = Utils.DATABASE_NAME)
 data class StoryLocalModel(
     @PrimaryKey
     val id: String,
@@ -40,7 +41,7 @@ fun StoryLocalModel.toDomain() = Story(
     lon = lon
 )
 
-@Entity(tableName = "theStoryRemote")
+@Entity(tableName = Utils.STORY_REMOTE_KEY)
 data class StoryRemoteKey(
     @PrimaryKey val id: String,
     val prevKey: Int?,
