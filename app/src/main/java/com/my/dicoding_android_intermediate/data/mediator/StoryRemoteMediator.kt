@@ -24,13 +24,16 @@ class StoryRemoteMediator(
         try {
             val responseData = apiService.getAllStories(token, page, state.config.pageSize)
             val endOfPaginationReached = responseData.storyResponseItems.isEmpty()
-            val storyLocalModelList: List<StoryLocalModel>
+            val storyLocalModelList: MutableList<StoryLocalModel> = mutableListOf()
             storyDatabase.withTransaction {
                 if (loadType == LoadType.REFRESH) {
                     storyDatabase.storyDao().deleteAll()
                 }
-
-                storyDatabase.storyDao().insertStories(responseData)
+                responseData.storyResponseItems.forEach { result ->
+                    val storyLocalModel: StoryLocalModel = StoryLocalModel.fromResponse(result)
+                    storyLocalModelList.add(storyLocalModel)
+                }
+                storyDatabase.storyDao().insertStories(storyLocalModelList)
             }
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
         } catch (exception: Exception) {
@@ -41,6 +44,7 @@ class StoryRemoteMediator(
     private companion object {
         const val INITIAL_PAGE_INDEX = 1
     }
+
     override suspend fun initialize(): InitializeAction {
         return InitializeAction.LAUNCH_INITIAL_REFRESH
     }

@@ -31,4 +31,5 @@ data class StoryResponseItem(
     val id: String,
     @field:SerializedName("lat")
     val lat: Double?
+
 ) : Parcelable
