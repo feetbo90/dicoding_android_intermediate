@@ -22,7 +22,7 @@ class StoryRemoteMediator(
         val page = INITIAL_PAGE_INDEX
         try {
             val responseData = apiService.getAllStories(token, page, state.config.pageSize)
-            val endOfPaginationReached = responseData.isEmpty()
+            val endOfPaginationReached = responseData.storyResponseItems.isEmpty()
             storyDatabase.withTransaction {
                 if (loadType == LoadType.REFRESH) {
                     storyDatabase.storyDao().deleteAll()
