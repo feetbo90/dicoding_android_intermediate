@@ -33,7 +33,7 @@ class StoryRepository @Inject constructor(
     }
 
     @ExperimentalPagingApi
-    fun getAllStories(token: String): Flow<PagingData<Story>> = flow {
+    fun getAllStories(token: String): Flow<PagingData<Story>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 10
