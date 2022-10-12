@@ -93,7 +93,7 @@ class MapLocationFragment : Fragment(), OnMapReadyCallback, MenuProvider {
         }
     }
 
-    fun onFollowsResultReceived(result: MyResult<StoryResponse>) {
+    private fun onFollowsResultReceived(result: MyResult<StoryResponse>) {
         when (result) {
             is MyResult.Success -> {
                 showStories(result.data.storyResponseItems)
