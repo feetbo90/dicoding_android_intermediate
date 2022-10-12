@@ -4,19 +4,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.my.dicoding_android_intermediate.data.entities.Story
 import com.my.dicoding_android_intermediate.data.remote.response.StoryResponse
-import com.my.dicoding_android_intermediate.data.remote.response.StoryResponseItem
 import com.my.dicoding_android_intermediate.data.repository.story.StoryRepository
 import com.my.dicoding_android_intermediate.data.result.MyResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@ExperimentalPagingApi
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val storyRepository: StoryRepository
@@ -42,6 +43,6 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getStoriesTwo(token: String): LiveData<PagingData<Story>> =
-        storyRepository.getStories(token).cachedIn(viewModelScope).asLiveData()
+        storyRepository.getAllStories(token).cachedIn(viewModelScope).asLiveData()
 
 }
