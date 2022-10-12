@@ -1,10 +1,17 @@
 package com.my.dicoding_android_intermediate.data.repository.story
 
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.my.dicoding_android_intermediate.data.database.StoryDatabase
+import com.my.dicoding_android_intermediate.data.entities.Story
+import com.my.dicoding_android_intermediate.data.mediator.StoryRemoteMediator
 import com.my.dicoding_android_intermediate.data.remote.network.ApiService
 import com.my.dicoding_android_intermediate.data.remote.response.ResponseFileUpload
 import com.my.dicoding_android_intermediate.data.remote.response.StoryResponse
 import com.my.dicoding_android_intermediate.data.result.MyResult
+import com.my.dicoding_android_intermediate.data.sources.StoryPagingSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okhttp3.MultipartBody
@@ -26,7 +33,18 @@ class StoryRepository @Inject constructor(
         }
     }
 
-    fun getAllStories():
+    @ExperimentalPagingApi
+    fun getAllStories(): Flow<PagingData<Story>> = flow {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 10
+            ),
+            remoteMediator = StoryRemoteMediator(apiService, storyDatabase, ""),
+            pagingSourceFactory = {
+                StoryPagingSource
+            }
+        )
+    }
 
     suspend fun uploadImage(
         token: String,
