@@ -36,8 +36,8 @@ class LoginFragmentTest {
 
     @Before
     fun setUp() {
-        mockWebServer.start(8080)
-        ApiConfig.API_BASE_URL = "http://127.0.0.1:8080/"
+        mockWebServer.start(9000)
+        ApiConfig.API_BASE_URL = "http://127.0.0.1:9000/"
         IdlingRegistry.getInstance().register(EspressoIdlingResources.countingIdlingResource)
     }
 
@@ -55,7 +55,7 @@ class LoginFragmentTest {
             .setResponseCode(200)
             .setBody(JsonConverter.readStringFromFile("login_success.json"))
         mockWebServer.enqueue(mockResponse)
-//        onView(withId(R.id.username)).check(matches(isDisplayed()))
-//        onView(withText("Login Success")).check(matches(isDisplayed()))
+        onView(withId(R.id.username)).check(matches(isDisplayed()))
+        onView(withId(R.id.view_loading)).check(matches(isEnabled()))
     }
 }
