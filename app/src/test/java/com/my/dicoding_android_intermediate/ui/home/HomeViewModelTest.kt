@@ -17,6 +17,7 @@ import com.my.dicoding_android_intermediate.utils.getOrAwaitValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
@@ -66,6 +67,10 @@ class HomeViewModelTest {
             workerDispatcher = Dispatchers.Main,
         )
         differ.submitData(actualStory)
+
+        Mockito.verify(storyRepository).getAllStories("auth_token")
+        assertNotNull(differ.snapshot())
+        assertEquals(dummyStory.size, differ.snapshot().size)
     }
 }
 
