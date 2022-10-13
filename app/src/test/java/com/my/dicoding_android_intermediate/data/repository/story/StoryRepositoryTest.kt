@@ -3,6 +3,7 @@ package com.my.dicoding_android_intermediate.data.repository.story
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.my.dicoding_android_intermediate.DataDummy
 import com.my.dicoding_android_intermediate.MainDispatcherRule
+import com.my.dicoding_android_intermediate.data.database.StoryDatabase
 import com.my.dicoding_android_intermediate.data.remote.network.ApiService
 import com.my.dicoding_android_intermediate.data.result.MyResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,6 +26,8 @@ class StoryRepositoryTest {
 
     @Mock
     private lateinit var apiService: ApiService
+    @Mock
+    private lateinit var storyDatabase: StoryDatabase
     private lateinit var storyRepository: StoryRepository
     private val dummyMapStories = DataDummy.generateMapStories()
     private val dummyMapStoriesFailed = DataDummy.generateMapStoriesFailed()
@@ -34,7 +37,7 @@ class StoryRepositoryTest {
 
     @Before
     fun setUp() {
-        storyRepository = StoryRepository(apiService)
+        storyRepository = StoryRepository(apiService, storyDatabase)
     }
 
     @Test

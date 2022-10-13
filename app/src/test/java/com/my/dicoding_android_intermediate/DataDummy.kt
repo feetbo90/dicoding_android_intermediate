@@ -1,5 +1,6 @@
 package com.my.dicoding_android_intermediate
 
+import com.my.dicoding_android_intermediate.data.entities.Story
 import com.my.dicoding_android_intermediate.data.remote.response.*
 import com.my.dicoding_android_intermediate.data.result.MyResult
 import kotlinx.coroutines.flow.Flow
@@ -75,5 +76,18 @@ object DataDummy {
 
     fun getMapStoriesError(): Exception {
         return Exception(ClassCastException())
+    }
+
+    fun generateDummyStoryResponse(): List<Story> {
+        val items: MutableList<Story> = arrayListOf()
+        for (i in 0..100) {
+            val quote = Story(
+                i.toString(),
+                "author + $i",
+                "quote $i",
+            )
+            items.add(quote)
+        }
+        return items
     }
 }
