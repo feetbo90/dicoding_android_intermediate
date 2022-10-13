@@ -6,8 +6,8 @@ import com.my.dicoding_android_intermediate.data.result.MyResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-import kotlin.ClassCastException
-import kotlin.Exception
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 object DataDummy {
 
@@ -80,11 +80,17 @@ object DataDummy {
 
     fun generateDummyStoryResponse(): List<Story> {
         val items: MutableList<Story> = arrayListOf()
+        val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss a z")
         for (i in 0..100) {
             val quote = Story(
                 i.toString(),
-                "author + $i",
-                "quote $i",
+                "author + $i.png",
+                ZonedDateTime
+                    .parse("2019-03-27 10:15:30 am -05:00", formatter),
+                "Mhd Iqbal Pradipta",
+                "deskripsi",
+                12.2,
+                19.0
             )
             items.add(quote)
         }
