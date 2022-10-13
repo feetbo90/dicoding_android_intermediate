@@ -52,7 +52,7 @@ class HomeViewModelTest {
     @Test
     fun `when Get Story Should Not Null and Return Success`() = runTest{
         val dummyStory = DataDummy.generateDummyStoryResponse()
-        val data: PagingData<Story> = QuotePagingSource.snapshot(dummyStory)
+        val data: PagingData<Story> = StoryPagingSource.snapshot(dummyStory)
         val expectedStory = MutableLiveData<PagingData<Story>>()
         expectedStory.value = data
         val newExpected = expectedStory.asFlow()
@@ -76,7 +76,7 @@ val noopListUpdateCallback = object : ListUpdateCallback {
     override fun onChanged(position: Int, count: Int, payload: Any?) {}
 }
 
-class QuotePagingSource : PagingSource<Int, LiveData<List<Story>>>() {
+class StoryPagingSource : PagingSource<Int, LiveData<List<Story>>>() {
     companion object {
         fun snapshot(items: List<Story>): PagingData<Story> {
             return PagingData.from(items)

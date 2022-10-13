@@ -1,6 +1,7 @@
 package com.my.dicoding_android_intermediate
 
 import com.my.dicoding_android_intermediate.data.entities.Story
+import com.my.dicoding_android_intermediate.data.remote.model.StoryLocalModel
 import com.my.dicoding_android_intermediate.data.remote.response.*
 import com.my.dicoding_android_intermediate.data.result.MyResult
 import kotlinx.coroutines.flow.Flow
@@ -88,6 +89,24 @@ object DataDummy {
                 ZonedDateTime.now(),
                 "Mhd Iqbal Pradipta",
                 "deskripsi",
+                12.2,
+                19.0
+            )
+            items.add(quote)
+        }
+        return items
+    }
+
+    fun generateDummyStoryLocalModelResponse(): List<StoryLocalModel> {
+        val items: MutableList<StoryLocalModel> = arrayListOf()
+        val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss a z")
+        for (i in 0..100) {
+            val quote = StoryLocalModel(
+                i.toString(),
+                "author + $i.png",
+                "Description",
+                "author + $i.png",
+                ZonedDateTime.now().toString(),
                 12.2,
                 19.0
             )
