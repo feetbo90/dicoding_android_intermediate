@@ -5,6 +5,7 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.MediumTest
 import com.my.dicoding_android_intermediate.BuildConfig
 import com.my.dicoding_android_intermediate.converter.JsonConverter
 import com.my.dicoding_android_intermediate.data.remote.network.ApiConfig
@@ -23,7 +24,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-
+@MediumTest
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class LoginFragmentTest {
