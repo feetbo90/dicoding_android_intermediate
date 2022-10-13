@@ -4,14 +4,15 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
-import androidx.paging.ExperimentalPagingApi
-import androidx.paging.PagingData
-import androidx.paging.PagingSource
-import androidx.paging.PagingState
+import androidx.paging.*
+import androidx.recyclerview.widget.ListUpdateCallback
 import com.my.dicoding_android_intermediate.DataDummy
+import com.my.dicoding_android_intermediate.adapter.StoriesListAdapter
 import com.my.dicoding_android_intermediate.data.entities.Story
 import com.my.dicoding_android_intermediate.data.repository.AuthRepository
 import com.my.dicoding_android_intermediate.data.repository.story.StoryRepository
+import com.my.dicoding_android_intermediate.utils.getOrAwaitValue
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.*
 import org.junit.Rule
@@ -38,14 +39,28 @@ class HomeViewModelTest {
     fun `when Get Story Should Not Null and Return Success`() {
         val dummyStory = DataDummy.generateDummyStoryResponse()
         val data: PagingData<Story> = QuotePagingSource.snapshot(dummyStory)
-        val expectedStory = MutableLiveData<PagingData<Story>>().asFlow()
+        val expectedStory = MutableLiveData<PagingData<Story>>()
         expectedStory.value = data
+        val newExpected = expectedStory.asFlow()
 
-        `when`(storyRepository.getAllStories("auth_token")).thenReturn(expectedStory)
-        val mainViewModel = MainViewModel(quoteRepository)
-        val actualQuote: PagingData<QuoteResponseItem> = mainViewModel.quote.getOrAwaitValue()
+        `when`(storyRepository.getAllStories("auth_token")).thenReturn(newExpected)
+        val homeViewModel = HomeViewModel(storyRepository)
+        val actualStory: PagingData<Story> = homeViewModel.getStoriesTwo("auth_token").getOrAwaitValue()
 
+        val differ = AsyncPagingDataDiffer(
+            diffCallback = StoriesListAdapter.StoryDiffCallback,
+            updateCallback = noopListUpdateCallback,
+            workerDispatcher = Dispatchers.Main,
+        )
+        differ.submitData(actualStory)
     }
+}
+
+val noopListUpdateCallback = object : ListUpdateCallback {
+    override fun onInserted(position: Int, count: Int) {}
+    override fun onRemoved(position: Int, count: Int) {}
+    override fun onMoved(fromPosition: Int, toPosition: Int) {}
+    override fun onChanged(position: Int, count: Int, payload: Any?) {}
 }
 
 class QuotePagingSource : PagingSource<Int, LiveData<List<Story>>>() {
