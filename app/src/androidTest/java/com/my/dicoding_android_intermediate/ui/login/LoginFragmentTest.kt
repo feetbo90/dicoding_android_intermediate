@@ -5,11 +5,15 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.my.dicoding_android_intermediate.BuildConfig
+import com.my.dicoding_android_intermediate.converter.JsonConverter
 import com.my.dicoding_android_intermediate.data.remote.network.ApiConfig
 import com.my.dicoding_android_intermediate.launchFragmentInHiltContainer
 import dagger.hilt.android.testing.CustomTestApplication
+import com.my.dicoding_android_intermediate.R
+
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
@@ -43,6 +47,11 @@ class LoginFragmentTest {
     fun getHeadlineNews_Success() {
         launchFragmentInHiltContainer<LoginFragment>()
 
-//        onView(withId(R.id.))
+        val mockResponse = MockResponse()
+            .setResponseCode(200)
+            .setBody(JsonConverter.readStringFromFile("login_success.json"))
+        mockWebServer.enqueue(mockResponse)
+        onView(withId(R.id.username)).check(matches(isDisplayed()))
+        onView(withText("Login Success")).check(matches(isDisplayed()))
     }
 }
