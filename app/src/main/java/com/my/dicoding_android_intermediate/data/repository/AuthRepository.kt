@@ -5,6 +5,7 @@ import com.my.dicoding_android_intermediate.data.remote.network.ApiService
 import com.my.dicoding_android_intermediate.data.remote.response.ResponseLogin
 import com.my.dicoding_android_intermediate.data.remote.response.ResponseRegister
 import com.my.dicoding_android_intermediate.data.result.MyResult
+import com.my.dicoding_android_intermediate.utils.wrapEspressoIdlingResource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -16,12 +17,14 @@ class AuthRepository @Inject constructor(
     private val authDataStores: AuthDataStores
 ) {
     suspend fun userLogin(email: String, password: String): Flow<MyResult<ResponseLogin>> = flow {
-        try {
-            val response = apiService.loginUser(email, password)
-            emit(MyResult.Success(response))
-        } catch (e: Exception) {
-            e.printStackTrace()
-            emit(MyResult.ErrorException(Exception("Login Failed")))
+        wrapEspressoIdlingResource {
+            try {
+                val response = apiService.loginUser(email, password)
+                emit(MyResult.Success(response))
+            } catch (e: Exception) {
+                e.printStackTrace()
+                emit(MyResult.ErrorException(Exception("Login Failed")))
+            }
         }
     }.flowOn(Dispatchers.IO)
 
