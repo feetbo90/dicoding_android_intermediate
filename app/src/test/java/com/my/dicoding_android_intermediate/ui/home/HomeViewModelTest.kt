@@ -40,7 +40,7 @@ class HomeViewModelTest {
         val expectedStory = MutableLiveData<PagingData<Story>>()
         expectedStory.value = data
 
-        `when`(storyRepository.getAllStories("auth_toke")).thenReturn(expectedStory)
+        `when`(storyRepository.getAllStories("auth_token")).thenReturn(expectedStory)
         val mainViewModel = MainViewModel(quoteRepository)
         val actualQuote: PagingData<QuoteResponseItem> = mainViewModel.quote.getOrAwaitValue()
 
