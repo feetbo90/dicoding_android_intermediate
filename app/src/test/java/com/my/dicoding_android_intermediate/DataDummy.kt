@@ -85,8 +85,7 @@ object DataDummy {
             val quote = Story(
                 i.toString(),
                 "author + $i.png",
-                ZonedDateTime
-                    .parse("2019-03-27 10:15:30 am -05:00", formatter),
+                ZonedDateTime.now(),
                 "Mhd Iqbal Pradipta",
                 "deskripsi",
                 12.2,

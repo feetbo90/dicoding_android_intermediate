@@ -7,14 +7,18 @@ import androidx.lifecycle.asFlow
 import androidx.paging.*
 import androidx.recyclerview.widget.ListUpdateCallback
 import com.my.dicoding_android_intermediate.DataDummy
+import com.my.dicoding_android_intermediate.MainDispatcherRule
 import com.my.dicoding_android_intermediate.adapter.StoriesListAdapter
 import com.my.dicoding_android_intermediate.data.entities.Story
 import com.my.dicoding_android_intermediate.data.repository.AuthRepository
 import com.my.dicoding_android_intermediate.data.repository.story.StoryRepository
+import com.my.dicoding_android_intermediate.ui.login.LoginFragmentViewModel
 import com.my.dicoding_android_intermediate.utils.getOrAwaitValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
+import org.junit.Before
 import org.junit.Rule
 
 import org.junit.Test
@@ -32,11 +36,21 @@ class HomeViewModelTest {
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
     @Mock
     private lateinit var storyRepository: StoryRepository
 
+    private lateinit var homeViewModel: HomeViewModel
+
+    @Before
+    fun setUp() {
+        homeViewModel = HomeViewModel(storyRepository)
+    }
+
     @Test
-    fun `when Get Story Should Not Null and Return Success`() {
+    fun `when Get Story Should Not Null and Return Success`() = runTest{
         val dummyStory = DataDummy.generateDummyStoryResponse()
         val data: PagingData<Story> = QuotePagingSource.snapshot(dummyStory)
         val expectedStory = MutableLiveData<PagingData<Story>>()
@@ -44,11 +58,10 @@ class HomeViewModelTest {
         val newExpected = expectedStory.asFlow()
 
         `when`(storyRepository.getAllStories("auth_token")).thenReturn(newExpected)
-        val homeViewModel = HomeViewModel(storyRepository)
         val actualStory: PagingData<Story> = homeViewModel.getStoriesTwo("auth_token").getOrAwaitValue()
 
         val differ = AsyncPagingDataDiffer(
-            diffCallback = StoriesListAdapter.StoryDiffCallback,
+            diffCallback = StoriesListAdapter.DiffCallback,
             updateCallback = noopListUpdateCallback,
             workerDispatcher = Dispatchers.Main,
         )
