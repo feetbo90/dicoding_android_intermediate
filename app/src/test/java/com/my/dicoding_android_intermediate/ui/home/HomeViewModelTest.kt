@@ -3,6 +3,7 @@ package com.my.dicoding_android_intermediate.ui.home
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asFlow
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
 import androidx.paging.PagingSource
@@ -37,7 +38,7 @@ class HomeViewModelTest {
     fun `when Get Story Should Not Null and Return Success`() {
         val dummyStory = DataDummy.generateDummyStoryResponse()
         val data: PagingData<Story> = QuotePagingSource.snapshot(dummyStory)
-        val expectedStory = MutableLiveData<PagingData<Story>>()
+        val expectedStory = MutableLiveData<PagingData<Story>>().asFlow()
         expectedStory.value = data
 
         `when`(storyRepository.getAllStories("auth_token")).thenReturn(expectedStory)
