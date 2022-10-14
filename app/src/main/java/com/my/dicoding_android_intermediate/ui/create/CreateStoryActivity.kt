@@ -28,6 +28,7 @@ import com.my.dicoding_android_intermediate.databinding.ActivityCreateStoryBindi
 import com.my.dicoding_android_intermediate.utils.MediaUtility
 import com.my.dicoding_android_intermediate.utils.MediaUtility.reduceFileImage
 import com.my.dicoding_android_intermediate.utils.MediaUtility.uriToFile
+import com.my.dicoding_android_intermediate.utils.Utils
 import com.my.dicoding_android_intermediate.utils.animateVisibility
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -59,13 +60,14 @@ class CreateStoryActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        lifecycleScope.launchWhenCreated {
-            launch {
-                viewModel.getAuthToken().collect { authToken ->
-                    if (!authToken.isNullOrEmpty()) token = authToken
-                }
-            }
-        }
+        token = intent.getStringExtra(Utils.TOKEN) ?: ""
+//        lifecycleScope.launchWhenCreated {
+//            launch {
+//                viewModel.getAuthToken().collect { authToken ->
+//                    if (!authToken.isNullOrEmpty()) token = authToken
+//                }
+//            }
+//        }
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         getMyLastLocation()

@@ -10,10 +10,10 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.my.dicoding_android_intermediate.R
-import com.my.dicoding_android_intermediate.data.remote.response.StoryResponseItem
+import com.my.dicoding_android_intermediate.data.entities.Story
 import com.my.dicoding_android_intermediate.databinding.ActivityDetailBinding
 import com.my.dicoding_android_intermediate.utils.Utils
-import com.my.dicoding_android_intermediate.utils.setLocalDateFormat
+import com.my.dicoding_android_intermediate.utils.setLocalFormat
 
 class DetailActivity : AppCompatActivity() {
 
@@ -27,9 +27,9 @@ class DetailActivity : AppCompatActivity() {
         supportPostponeEnterTransition()
 
         val story = if (Build.VERSION.SDK_INT >= 33) {
-            intent.getParcelableExtra(Utils.DETAIL, StoryResponseItem::class.java)
+            intent.getParcelableExtra(Utils.DETAIL, Story::class.java)
         } else {
-            intent.getParcelableExtra<StoryResponseItem>(Utils.DETAIL)
+            intent.getParcelableExtra<Story>(Utils.DETAIL)
         }
         parseStoriesData(story)
 
@@ -38,13 +38,13 @@ class DetailActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
     }
 
-    private fun parseStoriesData(stories: StoryResponseItem?) {
+    private fun parseStoriesData(stories: Story?) {
         if (stories != null) {
             binding.apply {
                 tvStoryUsername.text = stories.name
                 tvStoryDescription.text = stories.description
                 toolbar.title = getString(R.string.detailToolbarTittle, stories.name)
-                tvStoryDate.setLocalDateFormat(stories.createdAt)
+                tvStoryDate.setLocalFormat(stories.createdAt)
 
                 Glide
                     .with(this@DetailActivity)
@@ -79,12 +79,7 @@ class DetailActivity : AppCompatActivity() {
         }
     }
     override fun onSupportNavigateUp(): Boolean {
-//        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-//            override fun handleOnBackPressed() {
-//                finish();
-//            }
-//        })
-        onBackPressed()
+        finish()
         return true
     }
 }

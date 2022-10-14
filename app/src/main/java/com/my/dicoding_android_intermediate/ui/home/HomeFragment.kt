@@ -54,6 +54,7 @@ class HomeFragment : Fragment() {
 
         binding?.fabCreateStory?.setOnClickListener {
             Intent(requireContext(), CreateStoryActivity::class.java).also { intent ->
+                intent.putExtra(Utils.TOKEN, token)
                 startActivity(intent)
             }
         }
