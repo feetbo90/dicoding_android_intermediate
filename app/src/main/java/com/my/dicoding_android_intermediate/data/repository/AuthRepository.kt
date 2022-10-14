@@ -28,13 +28,19 @@ class AuthRepository @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
-    suspend fun userRegister(email: String, fullName: String, password: String): Flow<MyResult<ResponseRegister>> = flow {
-        try {
-            val response = apiService.registerUser(fullName, email, password)
-            emit(MyResult.Success(response))
-        } catch (e: Exception) {
-            e.printStackTrace()
-            emit(MyResult.ErrorException(Exception("Register Failed")))
+    suspend fun userRegister(
+        email: String,
+        fullName: String,
+        password: String
+    ): Flow<MyResult<ResponseRegister>> = flow {
+        wrapEspressoIdlingResource {
+            try {
+                val response = apiService.registerUser(fullName, email, password)
+                emit(MyResult.Success(response))
+            } catch (e: Exception) {
+                e.printStackTrace()
+                emit(MyResult.ErrorException(Exception("Register Failed")))
+            }
         }
     }.flowOn(Dispatchers.IO)
 
