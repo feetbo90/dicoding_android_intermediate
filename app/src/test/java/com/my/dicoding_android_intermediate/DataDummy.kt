@@ -84,8 +84,8 @@ object DataDummy {
 //        return MyResult.Error(ClassCastException("error").toString())
     }
 
-    fun getMapStoriesError(): Exception {
-        return Exception(ClassCastException())
+    fun getUploadFailed(): Exception {
+        return Exception("error upload")
     }
 
     fun generateDummyStoryResponse(): List<Story> {

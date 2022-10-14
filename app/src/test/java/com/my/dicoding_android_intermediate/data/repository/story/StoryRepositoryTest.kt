@@ -37,6 +37,7 @@ class StoryRepositoryTest {
     private val dummyLat = DataDummy.createRequestBody("12.0")
     private val dummyLon = DataDummy.createRequestBody("99.0")
     private val dummyFileUpload = DataDummy.generateUploadFile()
+    private val dummyFileUploadFailed = DataDummy.getUploadFailed()
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
@@ -47,17 +48,33 @@ class StoryRepositoryTest {
     }
 
     @Test
-    fun uploadImage() = runTest {
-        `when`(apiService.uploadImage("auth_token", dummyMultipart, dummyDescription, dummyLat, dummyLon)).thenReturn(
+    fun uploadImageSuccess() = runTest {
+        `when`(apiService.uploadImage(getBearerToken("auth_token"), dummyMultipart, dummyDescription, dummyLat, dummyLon)).thenReturn(
             dummyFileUpload
         )
         storyRepository.uploadImage("auth_token", dummyMultipart, dummyDescription, dummyLat, dummyLon)
             .collect { result ->
                 result.onSuccess {
-                    assertNotNull(result)
+                    assertTrue(result.isSuccess)
                 }
             }
+        verify(apiService).uploadImage(getBearerToken("auth_token"), dummyMultipart, dummyDescription, dummyLat, dummyLon)
     }
+
+    @Test
+    fun uploadImageFailed() = runTest {
+        `when`(apiService.uploadImage(getBearerToken("auth_token"), dummyMultipart, dummyDescription, dummyLat, dummyLon)).then {
+            dummyFileUploadFailed
+        }
+        storyRepository.uploadImage("auth_token", dummyMultipart, dummyDescription, dummyLat, dummyLon)
+            .collect { result ->
+                result.onFailure {
+                    assertTrue(result.isFailure)
+                }
+            }
+        verify(apiService).uploadImage(getBearerToken("auth_token"), dummyMultipart, dummyDescription, dummyLat, dummyLon)
+    }
+
 
     @Test
     fun getMapStoriesSuccess() = runTest {
