@@ -83,7 +83,7 @@ class AuthRepositoryTest {
     }
 
     @Test
-    fun userRegister() = runTest {
+    fun userRegisterSuccess() = runTest {
         `when`(apiService.registerUser("Mhd Iqbal Pradipta", "yo2@gmail.com", "123456")).thenReturn(
             dummyRegister
         )

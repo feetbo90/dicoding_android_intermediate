@@ -1,0 +1,40 @@
+UNIT TEST
+StoryRepository
+
+- upload image success
+- upload image failed
+- get map stories success
+- get map stories failed
+
+AuthRepository
+- user login success
+- user login failed
+- user register success
+- user register failed
+- save auth token
+- get auth token
+
+CreateStoryViewModel
+- file upload success
+- file upload failed
+
+HomeViewModel
+- get story success
+
+LoginFragmentViewModel
+- user login success and failed
+
+RegisterFragmentViewModel
+- user register successs and failed
+
+ANDROID TEST
+LoginFragmentTest
+- get login success
+
+RegisterFragmentTest
+- get register success
+
+MainFragmentTest
+- Load Story Success
+- Show Detail Success
+- Loadd Story to detail and then back to home story and then go to create story

@@ -1,4 +1,4 @@
-package com.my.dicoding_android_intermediate.ui.auth
+package com.my.dicoding_android_intermediate.ui.main
 
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
@@ -20,7 +20,6 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import com.my.dicoding_android_intermediate.R
 import com.my.dicoding_android_intermediate.ui.create.CreateStoryActivity
 import com.my.dicoding_android_intermediate.ui.detail.DetailActivity
-import com.my.dicoding_android_intermediate.ui.main.MainActivity
 
 import org.junit.After
 import org.junit.Before
@@ -32,7 +31,7 @@ import org.junit.runner.RunWith
 @HiltAndroidTest
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class AuthActivityTest {
+class MainActivityTest {
 
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
@@ -62,6 +61,7 @@ class AuthActivityTest {
         onView(withId(R.id.stories)).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
         intended(hasComponent(DetailActivity::class.java.name))
         onView(withId(R.id.tv_story_username)).check(matches(isDisplayed()))
+        Intents.release()
     }
 
     @Test
@@ -75,7 +75,6 @@ class AuthActivityTest {
         onView(withId(R.id.tv_story_username)).check(matches(isDisplayed()))
         pressBack()
         onView(withId(R.id.fab_create_story)).perform(click())
-        intended(hasComponent(CreateStoryActivity::class.java.name))
         pressBack()
     }
 }
