@@ -53,7 +53,9 @@ class StoryRepositoryTest {
         )
         storyRepository.uploadImage("auth_token", dummyMultipart, dummyDescription, dummyLat, dummyLon)
             .collect { result ->
-                Result.isSuc
+                result.onSuccess {
+                    assertNotNull(result)
+                }
             }
     }
 
