@@ -61,13 +61,7 @@ class CreateStoryActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         token = intent.getStringExtra(Utils.TOKEN) ?: ""
-//        lifecycleScope.launchWhenCreated {
-//            launch {
-//                viewModel.getAuthToken().collect { authToken ->
-//                    if (!authToken.isNullOrEmpty()) token = authToken
-//                }
-//            }
-//        }
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         getMyLastLocation()

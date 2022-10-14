@@ -2,13 +2,11 @@ package com.my.dicoding_android_intermediate.ui.home
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.PagingData
@@ -19,7 +17,6 @@ import com.my.dicoding_android_intermediate.adapter.StoriesListAdapter
 import com.my.dicoding_android_intermediate.data.entities.Story
 import com.my.dicoding_android_intermediate.databinding.FragmentHomeBinding
 import com.my.dicoding_android_intermediate.ui.create.CreateStoryActivity
-import com.my.dicoding_android_intermediate.ui.maps.MapLocationActivity
 import com.my.dicoding_android_intermediate.utils.Utils
 import com.my.dicoding_android_intermediate.utils.animateVisibility
 import dagger.hilt.android.AndroidEntryPoint
@@ -54,13 +51,6 @@ class HomeFragment : Fragment() {
 
         binding?.fabCreateStory?.setOnClickListener {
             Intent(requireContext(), CreateStoryActivity::class.java).also { intent ->
-                intent.putExtra(Utils.TOKEN, token)
-                startActivity(intent)
-            }
-        }
-
-        binding?.fabMap?.setOnClickListener {
-            Intent(requireContext(), MapLocationActivity::class.java).also { intent ->
                 intent.putExtra(Utils.TOKEN, token)
                 startActivity(intent)
             }

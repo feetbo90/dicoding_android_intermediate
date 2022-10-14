@@ -63,12 +63,25 @@
                 android:layout_height="wrap_content"
                 android:alpha="0.6"
                 android:textAllCaps="true"
+                app:drawableStartCompat="@drawable/ic_baseline_calendar_month_24"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="@+id/storyUsername"
                 app:layout_constraintStart_toStartOf="@+id/storyUsername"
                 app:layout_constraintTop_toBottomOf="@+id/storyUsername"
                 tools:text="@string/dummyDate" />
+
+            <TextView
+                android:id="@+id/item_story_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:textSize="12sp"
+                app:drawableStartCompat="@drawable/ic_baseline_map_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/storyImage"
+                app:layout_constraintTop_toBottomOf="@+id/tv_story_description" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -41,7 +41,7 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        lifecycleScope.launchWhenStarted {
+        lifecycleScope.launchWhenCreated {
             launch {
                 viewModel.getAuthToken().collect { authToken ->
                     Log.i("login", authToken ?: "kosong")
@@ -86,6 +86,7 @@ class LoginFragment : Fragment() {
                     when (result) {
                         is MyResult.Success -> {
                             result.data.loginResult?.token?.let { token ->
+                                viewModel.saveToken(token)
                                 Intent(requireContext(), MainActivity::class.java).also { intent ->
                                     intent.putExtra(TOKEN, token)
                                     startActivity(intent)

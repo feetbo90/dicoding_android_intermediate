@@ -24,17 +24,16 @@
         android:theme="@style/Theme.Dicoding_android_intermediate"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <activity
-            android:name=".ui.maps.MapLocationActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
+
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDpFf2DtgM0Z5NWxuK7jn2dPOLBs2TyBk0" />
+
+        <activity
+            android:name=".ui.maps.MapLocationActivity"
+            android:exported="false">
+        </activity>
 
         <activity
             android:name=".di.test.HiltTestActivity"
