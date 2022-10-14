@@ -1,24 +1,25 @@
 package com.my.dicoding_android_intermediate.adapter
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.my.dicoding_android_intermediate.R
 import com.my.dicoding_android_intermediate.data.entities.Story
 import com.my.dicoding_android_intermediate.data.remote.response.StoryResponseItem
 import com.my.dicoding_android_intermediate.databinding.StoryItemBinding
 import com.my.dicoding_android_intermediate.ui.detail.DetailActivity
 import com.my.dicoding_android_intermediate.utils.Utils
 import com.my.dicoding_android_intermediate.utils.setImageFromUrl
-import com.my.dicoding_android_intermediate.utils.setLocalDateFormat
 import com.my.dicoding_android_intermediate.utils.setLocalFormat
-import java.time.format.DateTimeFormatter
 
 class StoriesListAdapter : PagingDataAdapter<Story, StoriesListAdapter.ViewHolder>(StoryDiffCallback()) {
     private lateinit var onItemClickCallback: OnItemClickCallback
@@ -34,6 +35,7 @@ class StoriesListAdapter : PagingDataAdapter<Story, StoriesListAdapter.ViewHolde
 
     class ViewHolder(private val binding: StoryItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        @SuppressLint("SetTextI18n")
         fun bind(context: Context, story: Story) {
             binding.apply {
 
@@ -41,6 +43,9 @@ class StoriesListAdapter : PagingDataAdapter<Story, StoriesListAdapter.ViewHolde
                 tvStoryDescription.text = story.description
                 storyImage.setImageFromUrl(context, story.photoUrl)
                 storyDate.setLocalFormat(story.createdAt)
+                if (story.lat != null) {
+                    itemStoryLocation.text = "${story.lat}, ${story.lon}"
+                } else itemStoryLocation.visibility = View.GONE
 
                 // On item clicked
                 root.setOnClickListener {
@@ -51,7 +56,8 @@ class StoriesListAdapter : PagingDataAdapter<Story, StoriesListAdapter.ViewHolde
                             Pair(storyImage, "story_image"),
                             Pair(storyUsername, "username"),
                             Pair(storyDate, "date"),
-                            Pair(tvStoryDescription, "description")
+                            Pair(tvStoryDescription, "description"),
+                            Pair(itemStoryLocation, "map")
                         )
 
                     Intent(context, DetailActivity::class.java).also { intent ->

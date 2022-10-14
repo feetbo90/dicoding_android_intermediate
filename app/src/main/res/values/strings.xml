@@ -54,4 +54,7 @@
     <string name="terrain_type">Terrain</string>
     <string name="hybrid_type">Hybrid</string>
     <string name="retry">Retry</string>
+    <string name="location_map">lat : %2$d and lon %2$d</string>
+    <string name="dummy_date">-</string>
+    <string name="dummy_name">-</string>
 </resources>

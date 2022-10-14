@@ -50,7 +50,7 @@ class RegisterFragmentTest {
 
         val mockResponse = MockResponse()
             .setResponseCode(200)
-            .setBody(JsonConverter.readStringFromFile("login_success.json"))
+            .setBody(JsonConverter.readStringFromFile("register_success.json"))
         mockWebServer.enqueue(mockResponse)
         Espresso.onView(ViewMatchers.withId(R.id.fullName))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))

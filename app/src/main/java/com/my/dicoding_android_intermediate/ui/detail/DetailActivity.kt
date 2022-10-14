@@ -1,9 +1,11 @@
 package com.my.dicoding_android_intermediate.ui.detail
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -38,6 +40,7 @@ class DetailActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun parseStoriesData(stories: Story?) {
         if (stories != null) {
             binding.apply {
@@ -45,6 +48,9 @@ class DetailActivity : AppCompatActivity() {
                 tvStoryDescription.text = stories.description
                 toolbar.title = getString(R.string.detailToolbarTittle, stories.name)
                 tvStoryDate.setLocalFormat(stories.createdAt)
+                if (stories.lat != null) {
+                    itemStoryLocation.text = "${stories.lat}, ${stories.lon}"
+                } else itemStoryLocation.visibility = View.GONE
 
                 Glide
                     .with(this@DetailActivity)
