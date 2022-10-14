@@ -5,6 +5,7 @@ import com.my.dicoding_android_intermediate.DataDummy
 import com.my.dicoding_android_intermediate.MainDispatcherRule
 import com.my.dicoding_android_intermediate.data.database.StoryDatabase
 import com.my.dicoding_android_intermediate.data.remote.network.ApiService
+import com.my.dicoding_android_intermediate.data.remote.response.ResponseFileUpload
 import com.my.dicoding_android_intermediate.data.repository.AuthRepository
 import com.my.dicoding_android_intermediate.data.repository.story.StoryRepository
 import com.my.dicoding_android_intermediate.data.result.MyResult
@@ -67,11 +68,11 @@ class CreateStoryViewModelTest {
 
     @Test
     fun `File upload should failed`() = runTest {
-        val expectedLogin = flow {
-            emit(Result.(dummyFileUploadFailed))
+        val expectedFailed: Flow<Result<ResponseFileUpload>> = flow {
+            emit(Result.failure(dummyFileUploadFailed))
         }
 
-        `when`(storyRepository.uploadImage("auth_token", dummyMultipart, dummyDescription, dummyLat, dummyLon)).then { dummyFileUploadFailed }
+        `when`(storyRepository.uploadImage("auth_token", dummyMultipart, dummyDescription, dummyLat, dummyLon)).then { expectedFailed }
         createStoryViewModel.uploadImage("auth_token", dummyMultipart, dummyDescription, dummyLat, dummyLon).collect { result ->
             result.onFailure {
                 assertTrue(result.isFailure)
