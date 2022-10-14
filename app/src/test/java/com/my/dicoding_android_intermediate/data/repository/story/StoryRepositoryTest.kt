@@ -7,6 +7,7 @@ import com.my.dicoding_android_intermediate.data.database.StoryDatabase
 import com.my.dicoding_android_intermediate.data.remote.network.ApiService
 import com.my.dicoding_android_intermediate.data.result.MyResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
 import org.junit.Before
@@ -31,6 +32,11 @@ class StoryRepositoryTest {
     private lateinit var storyRepository: StoryRepository
     private val dummyMapStories = DataDummy.generateMapStories()
     private val dummyMapStoriesFailed = DataDummy.generateMapStoriesFailed()
+    private val dummyMultipart = DataDummy.createMultiPart()
+    private val dummyDescription = DataDummy.createRequestBody("description")
+    private val dummyLat = DataDummy.createRequestBody("12.0")
+    private val dummyLon = DataDummy.createRequestBody("99.0")
+    private val dummyFileUpload = DataDummy.generateUploadFile()
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
@@ -41,7 +47,14 @@ class StoryRepositoryTest {
     }
 
     @Test
-    fun uploadImage() {
+    fun uploadImage() = runTest {
+        `when`(apiService.uploadImage("auth_token", dummyMultipart, dummyDescription, dummyLat, dummyLon)).thenReturn(
+            dummyFileUpload
+        )
+        storyRepository.uploadImage("auth_token", dummyMultipart, dummyDescription, dummyLat, dummyLon)
+            .collect { result ->
+                Result.isSuc
+            }
     }
 
     @Test

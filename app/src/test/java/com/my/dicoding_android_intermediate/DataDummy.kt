@@ -1,5 +1,7 @@
 package com.my.dicoding_android_intermediate
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import com.my.dicoding_android_intermediate.data.entities.Story
 import com.my.dicoding_android_intermediate.data.remote.model.StoryLocalModel
 import com.my.dicoding_android_intermediate.data.remote.response.*
@@ -7,6 +9,13 @@ import com.my.dicoding_android_intermediate.data.result.MyResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -114,4 +123,19 @@ object DataDummy {
         }
         return items
     }
+
+    fun createMultiPart(): MultipartBody.Part {
+        val file =
+            "Hallo data"
+                .toRequestBody("text/plain".toMediaType())
+        return MultipartBody.Part.createFormData(
+            "photo",
+            "Hallo.jpg",
+            file
+        )
+    }
+
+    fun createRequestBody(data : String): RequestBody = data.toRequestBody("text/plain".toMediaType())
+
+
 }
