@@ -29,8 +29,4 @@
         <item name="android:textColor">@color/blue</item>
     </style>
 
-    <style name="Text.Title">
-        <item name="fontFamily">@font/poppins_bold</item>
-        <item name="android:textSize">28sp</item>
-    </style>
 </resources>

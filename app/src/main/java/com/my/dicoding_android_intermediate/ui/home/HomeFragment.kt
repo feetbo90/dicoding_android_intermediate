@@ -19,6 +19,7 @@ import com.my.dicoding_android_intermediate.adapter.StoriesListAdapter
 import com.my.dicoding_android_intermediate.data.entities.Story
 import com.my.dicoding_android_intermediate.databinding.FragmentHomeBinding
 import com.my.dicoding_android_intermediate.ui.create.CreateStoryActivity
+import com.my.dicoding_android_intermediate.ui.maps.MapLocationActivity
 import com.my.dicoding_android_intermediate.utils.Utils
 import com.my.dicoding_android_intermediate.utils.animateVisibility
 import dagger.hilt.android.AndroidEntryPoint
@@ -53,6 +54,13 @@ class HomeFragment : Fragment() {
 
         binding?.fabCreateStory?.setOnClickListener {
             Intent(requireContext(), CreateStoryActivity::class.java).also { intent ->
+                startActivity(intent)
+            }
+        }
+
+        binding?.fabMap?.setOnClickListener {
+            Intent(requireContext(), MapLocationActivity::class.java).also { intent ->
+                intent.putExtra(Utils.TOKEN, token)
                 startActivity(intent)
             }
         }
